@@ -61,7 +61,7 @@ def convnet_preprocessor(
     #     lambda x: tf.concat(x, axis=-1)
     # )([flattened, input_raw])
     concatenated_output = flattened
-    print(concatenated_output)
+    # print(concatenated_output)
 
     output = (
         feedforward_model(

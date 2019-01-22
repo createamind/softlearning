@@ -82,12 +82,12 @@ GROUND_Z = 22
 
 # Default environment configuration
 ENV_CONFIG = {
-    "log_images": True,
+    "log_images": False,
     "enable_planner": True,
     "framestack": 2,  # note: only [1, 2] currently supported
-    "convert_images_to_video": True,
+    "convert_images_to_video": False,
     "early_terminate_on_collision": True,
-    "verbose": True,
+    "verbose": False,
     "reward_function": "lane_keep",
     "render_x_res": 800,
     "render_y_res": 600,
@@ -625,7 +625,7 @@ def compute_reward_lane_keep(env, prev, current):
         current["collision_other"] - prev["collision_vehicles"] -
         prev["collision_pedestrians"] - prev["collision_other"])
     if new_damage:
-        reward -= 100.0
+        reward -= 5.0
 
     # Sidewalk intersection
     reward -= current["intersection_offroad"]
