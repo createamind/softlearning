@@ -220,6 +220,7 @@ def main():
 
     if ('image' in task.lower()
         or 'blind' in task.lower()
+        or 'carla' in domain.lower()
         or 'image' in domain.lower()):
         variant_spec = get_variant_spec_image(
             universe, domain, task, args.policy)

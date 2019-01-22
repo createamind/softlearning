@@ -4,7 +4,7 @@ import numpy as np
 import gym
 from gym import spaces, wrappers
 
-from multiworld.envs.pygame.point2d import Point2DEnv, Point2DWallEnv
+# from multiworld.envs.pygame.point2d import Point2DEnv, Point2DWallEnv
 
 from .softlearning_env import SoftlearningEnv
 from softlearning.environments.gym.wrappers import NormalizeActionWrapper
@@ -27,6 +27,7 @@ from softlearning.environments.gym.mujoco.image_pusher import (
     ImageForkReacherEnv,
     BlindForkReacherEnv)
 from softlearning.environments.gym.multi_goal import MultiGoalEnv
+from softlearning.environments.gym.carla.carla import CarlaEnv
 
 
 def raise_on_use_wrapper(e):
@@ -75,10 +76,10 @@ GYM_ENVIRONMENTS = {
         'ImageReach': ImageForkReacherEnv,
         'BlindReach': BlindForkReacherEnv,
     },
-    'Point2DEnv': {
-        'Default': Point2DEnv,
-        'Wall': Point2DWallEnv,
-    },
+    # 'Point2DEnv': {
+    #     'Default': Point2DEnv,
+    #     'Wall': Point2DWallEnv,
+    # },
     'HandManipulatePen': {
         'v0': lambda: gym.envs.make('HandManipulatePen-v0'),
         'Dense-v0': lambda: gym.envs.make('HandManipulatePenDense-v0'),
@@ -113,6 +114,9 @@ GYM_ENVIRONMENTS = {
     },
     'MultiGoal': {
         'Default': MultiGoalEnv
+    },
+    'Carla': {
+        'Default': CarlaEnv
     },
 }
 
@@ -160,6 +164,9 @@ class GymAdapter(SoftlearningEnv):
     @property
     def active_observation_shape(self):
         """Shape for the active observation based on observation_keys."""
+        # if isinstance(self._env.observation_space, spaces.Box) and len(self._env.observation_space.shape) > 1:
+        #     return np.prod(self._env.observation_space.spaces[key].shape)
+
         if not isinstance(self._env.observation_space, spaces.Dict):
             return super(GymAdapter, self).active_observation_shape
 
@@ -172,7 +179,6 @@ class GymAdapter(SoftlearningEnv):
             for key in observation_keys)
 
         active_observation_shape = (active_size, )
-
         return active_observation_shape
 
     def convert_to_active_observation(self, observation):

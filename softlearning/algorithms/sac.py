@@ -101,6 +101,9 @@ class SAC(RLAlgorithm):
         self._save_full_state = save_full_state
 
         observation_shape = self._env.active_observation_shape
+        if len(observation_shape) > 1:
+            observation_shape = np.array([np.prod(observation_shape)])
+
         action_shape = self._env.action_space.shape
 
         assert len(observation_shape) == 1, observation_shape
