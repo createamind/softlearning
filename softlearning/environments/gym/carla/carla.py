@@ -628,10 +628,10 @@ def compute_reward_lane_keep(env, prev, current):
         reward -= 5.0
 
     # Sidewalk intersection
-    reward -= current["intersection_offroad"]
+    reward -= 3 * current["intersection_offroad"]
 
     # Opposite lane intersection
-    reward -= current["intersection_otherlane"]
+    reward -= 3 * current["intersection_otherlane"]
 
     return reward
 
@@ -641,7 +641,6 @@ REWARD_FUNCTIONS = {
     "custom": compute_reward_custom,
     "lane_keep": compute_reward_lane_keep,
 }
-
 
 def compute_reward(env, prev, current):
     return REWARD_FUNCTIONS[env.config["reward_function"]](env, prev, current)
