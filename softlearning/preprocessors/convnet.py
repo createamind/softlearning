@@ -13,12 +13,13 @@ def convnet_preprocessor(
         pool_type='MaxPool2D',
         pool_sizes=((2, 2), (2, 2)),
         pool_strides=(2, 2),
-        dense_hidden_layer_sizes=(64, 64),
+        dense_hidden_layer_sizes=(),
         data_format='channels_last',
         name="convnet_preprocessor",
         make_pickleable=True,
         *args,
         **kwargs):
+
     if data_format == 'channels_last':
         H, W, C = image_shape
     elif data_format == 'channels_first':
@@ -36,6 +37,10 @@ def convnet_preprocessor(
     images_flat, input_raw = tf.keras.layers.Lambda(
         lambda x: [x[..., :H * W * C], x[..., H * W * C:]]
     )(concatenated_input)
+
+
+
+    # print(images_flat, input_raw)
 
     images = tf.keras.layers.Reshape(image_shape)(images_flat)
 
@@ -69,7 +74,7 @@ def convnet_preprocessor(
             output_size=output_size,
             hidden_layer_sizes=dense_hidden_layer_sizes,
             activation='relu',
-            output_activation='linear',
+            output_activation='linear',   #####TODO can we use tf.nn.tanh????
             *args,
             **kwargs
         )([concatenated_output])

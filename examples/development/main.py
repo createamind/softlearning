@@ -5,7 +5,7 @@ from distutils.util import strtobool
 import pickle
 from pprint import pprint
 import sys
-
+import ray
 import tensorflow as tf
 from ray import tune
 from deepdiff import DeepDiff

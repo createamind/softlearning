@@ -48,12 +48,11 @@ ALGORITHM_PARAMS_BASE = {
         'epoch_length': 1000,
         'train_every_n_steps': 1,
         'n_train_repeat': 1,
-        'n_initial_exploration_steps': int(1e3),
+        'n_initial_exploration_steps': int(5e3),
         'reparameterize': REPARAMETERIZE,
         'eval_render_mode': None,
         'eval_n_episodes': 1,
         'eval_deterministic': True,
-
         'lr': 3e-4,
         'discount': 0.99,
         'target_update_interval': 1,
@@ -157,6 +156,7 @@ ENV_PARAMS = {
     },
     'Carla': {
         'Default': {
+            #'image_shape': (80, 80, 6),
             'image_shape': (64, 64, 2),
         }
     }
@@ -216,9 +216,25 @@ def get_variant_spec(universe, domain, task, policy):
     return variant_spec
 
 
+# 'image_shape': variant_spec['env_params']['image_shape'],
+# 'output_size': M,
+# 'conv_filters': (4, 4),
+# 'conv_kernel_sizes': ((3, 3), (3, 3)),
+# 'pool_type': 'MaxPool2D',
+# 'pool_sizes': ((2, 2), (2, 2)),
+# 'pool_strides': (2, 2),
+# 'dense_hidden_layer_sizes': (),
+# 'image_shape': variant_spec['env_params']['image_shape'],
+# 'output_size': M,
+# 'conv_filters': (4, 8, 16),
+# 'conv_kernel_sizes': ((3, 3), (3, 3), (3, 3)),
+# 'pool_type': 'MaxPool2D',
+# 'pool_sizes': ((2, 2), (2, 2), (2, 2)),
+# 'pool_strides': (2, 2),
+# 'dense_hidden_layer_sizes': (),
 def get_variant_spec_image(universe, domain, task, policy, *args, **kwargs):
     variant_spec = get_variant_spec(
-        universe, domain, task, policy, *args, **kwargs)
+        universe, domain, task, policy)
 
     if 'image' in task.lower() or 'image' in domain.lower():
         preprocessor_params = {
@@ -226,11 +242,11 @@ def get_variant_spec_image(universe, domain, task, policy, *args, **kwargs):
             'kwargs': {
                 'image_shape': variant_spec['env_params']['image_shape'],
                 'output_size': M,
-                'conv_filters': (4, 4),
-                'conv_kernel_sizes': ((3, 3), (3, 3)),
+                'conv_filters': (32, 64, 64),
+                'conv_kernel_sizes': ((3, 3), (3, 3), (3, 3)),
                 'pool_type': 'MaxPool2D',
-                'pool_sizes': ((2, 2), (2, 2)),
-                'pool_strides': (2, 2),
+                'pool_sizes': ((2, 2), (2, 2), (2, 2)),
+                'pool_strides': (2, 2, 2),
                 'dense_hidden_layer_sizes': (),
             },
         }
@@ -243,14 +259,15 @@ def get_variant_spec_image(universe, domain, task, policy, *args, **kwargs):
         preprocessor_params = {
             'type': 'convnet_preprocessor',
             'kwargs': {
+                #'image_shape': variant_spec['env_params']['image_shape'],
                 'image_shape': variant_spec['env_params']['image_shape'],
                 'output_size': M,
-                'conv_filters': (4, 8, 16),
+                'conv_filters': (64, 128, 128),
                 'conv_kernel_sizes': ((3, 3), (3, 3), (3, 3)),
                 'pool_type': 'MaxPool2D',
                 'pool_sizes': ((2, 2), (2, 2), (2, 2)),
-                'pool_strides': (2, 2),
-                'dense_hidden_layer_sizes': (),
+                'pool_strides': (2, 2, 2),
+                'dense_hidden_layer_sizes': (512, 16),
             },
         }
         variant_spec['policy_params']['kwargs']['preprocessor_params'] = (

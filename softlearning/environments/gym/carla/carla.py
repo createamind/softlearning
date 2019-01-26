@@ -88,14 +88,17 @@ ENV_CONFIG = {
     "convert_images_to_video": False,
     "early_terminate_on_collision": True,
     "verbose": False,
-    "reward_function": "lane_keep",
-    "render_x_res": 800,
-    "render_y_res": 600,
-    "x_res": 64,
-    "y_res": 64,
+    "reward_function": "corl2017",
+    "render_x_res": 800, #800,
+    "render_y_res": 800,
+    # "x_res": 64,
+    # "y_res": 64,
+    "x_res": 70,
+    "y_res": 70,
     "server_map": "/Game/Maps/Town02",
     "scenarios": [DEFAULT_SCENARIO],
-    "use_depth_camera": True,
+    # "use_depth_camera": True,
+    "use_depth_camera": False,
     "discrete_actions": False,
     "squash_action_logits": False,
 }
@@ -158,20 +161,21 @@ class CarlaEnv(MujocoEnv, EzPickle):
                 shape=(config["y_res"], config["x_res"],
                        3 * config["framestack"]),
                 dtype=np.uint8)
-        self.observation_space = Tuple(  # forward_speed, dist to goal
-            [
-                image_space,
-                Discrete(len(COMMANDS_ENUM)),  # next_command
-                Box(-128.0, 128.0, shape=(2, ), dtype=np.float32)
-            ])
-        ##TODO
-        image_space = Box(
-            low=-1,
-            high=1,
-            shape=(config["y_res"], config["x_res"],
-                       1 * config["framestack"],),
-            dtype=np.float32)
+        # self.observation_space = Tuple(  # forward_speed, dist to goal
+        #     [
+        #         image_space,
+        #         Discrete(len(COMMANDS_ENUM)),  # next_command
+        #         Box(-128.0, 128.0, shape=(2, ), dtype=np.float32)
+        #     ])
+        # ##TODO
         self.observation_space = image_space
+        # image_space = Box(
+        #     low=-1,
+        #     high=1,
+        #     shape=(config["y_res"], config["x_res"],
+        #                3 * config["framestack"],),
+        #     dtype=np.float32)
+        # self.observation_space = image_space
         print('-' * 100)
         print(self.observation_space)
         print('-' * 100)
@@ -207,7 +211,7 @@ class CarlaEnv(MujocoEnv, EzPickle):
                 "-carla-world-port={}".format(self.server_port)
             ],
             preexec_fn=os.setsid,
-            stdout=open(os.devnull, "w"))
+            stdout=open(os.devnull, "w"))  #########TODO debug here,memory error
         live_carla_processes.add(os.getpgid(self.server_process.pid))
 
         for i in range(RETRIES_ON_ERROR):
@@ -625,13 +629,13 @@ def compute_reward_lane_keep(env, prev, current):
         current["collision_other"] - prev["collision_vehicles"] -
         prev["collision_pedestrians"] - prev["collision_other"])
     if new_damage:
-        reward -= 5.0
+        reward -= 80
 
     # Sidewalk intersection
-    reward -= 3 * current["intersection_offroad"]
+    reward -= 1.2 * current["intersection_offroad"]
 
     # Opposite lane intersection
-    reward -= 3 * current["intersection_otherlane"]
+    reward -= 1.2 * current["intersection_otherlane"]
 
     return reward
 

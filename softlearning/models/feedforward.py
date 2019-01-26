@@ -6,7 +6,7 @@ from softlearning.utils.keras import PicklableKerasModel
 
 def feedforward_model(input_shapes,
                       output_size,
-                      hidden_layer_sizes,
+                      hidden_layer_sizes=(400, 300),
                       activation='relu',
                       output_activation='linear',
                       preprocessors=None,

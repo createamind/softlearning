@@ -252,6 +252,7 @@ def launch_experiments_ray(variant_specs,
             resources_per_trial['extra_gpu'] = 1
 
         ray.init(
+            #object_store_memory=30,
             resources=resources,
             num_cpus=args.cpus,
             num_gpus=args.gpus)

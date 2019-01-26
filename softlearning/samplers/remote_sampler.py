@@ -26,7 +26,7 @@ class RemoteSampler(BaseSampler):
         policy_pkl = pickle.dumps(policy)
 
         if not ray.is_initialized():
-            ray.init()
+            ray.init(object_store_memory=30)
 
         self._remote_environment = _RemoteEnv.remote(env_pkl, policy_pkl)
 
